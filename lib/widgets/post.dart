@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttershare/models/user.dart';
+import 'package:fluttershare/pages/comments.dart';
 import 'package:fluttershare/pages/home.dart';
 import 'package:fluttershare/widgets/custom_image.dart';
 import 'package:fluttershare/widgets/progress.dart';
@@ -172,15 +173,6 @@ class _PostState extends State<Post> {
                   tween: Tween(begin: 0.8, end: 1.4),
                   curve: Curves.elasticOut,
                   cycles: 0,
-                  repeats: 0,
-                  // builder: (context, animatorState, child) => Center(
-                  //   child: Container(
-                  //     margin: EdgeInsets.symmetric(vertical: 10),
-                  //     height: animatorState.value,
-                  //     width: animatorState.value,
-                  //     child: FlutterLogo(),
-                  //   ),
-                  // ),
                   builder: (context,animatorState, child ) => Transform.scale(
                     scale: animatorState.value,
                     child: Icon(
@@ -213,7 +205,12 @@ class _PostState extends State<Post> {
             ),
             Padding(padding: EdgeInsets.only(right: 20.0)),
             GestureDetector(
-              onTap: () => print('showing comments'),
+              onTap: () => showComments(
+                context,
+                postId: postId,
+                ownerId: ownerId,
+                mediaUrl: mediaUrl,
+              ),
               child: Icon(
                 Icons.chat,
                 size: 28.0,
@@ -270,3 +267,15 @@ class _PostState extends State<Post> {
     );
   }
 }
+
+showComments(BuildContext context,
+    {String postId, String ownerId, String mediaUrl}) {
+  Navigator.push(context, MaterialPageRoute(builder: (context) {
+    return Comments(
+      postId: postId,
+      postOwnerId: ownerId,
+      postMediaUrl: mediaUrl,
+    );
+  }));
+}
+

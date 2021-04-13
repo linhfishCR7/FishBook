@@ -1,10 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'pages/home.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-final GoogleSignIn googleSignIn =GoogleSignIn();
+final GoogleSignIn googleSignIn = GoogleSignIn();
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  Firestore.instance.settings(timestampsInSnapshotsEnabled: true).then((_) {
+    print("Timestamps enabled in snapshots\n");
+  }, onError: (_) {
+    print("Error enabling timestamps in snapshots\n");
+  });
   runApp(MyApp());
 }
 
