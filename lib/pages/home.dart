@@ -1,7 +1,3 @@
-//import 'dart:ffi';
-
-//import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,11 +11,9 @@ import 'package:fluttershare/pages/timeline.dart';
 import 'package:fluttershare/pages/upload.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../main.dart';
-
 final GoogleSignIn googleSignIn = GoogleSignIn();
 final StorageReference storageRef = FirebaseStorage.instance.ref();
-final userRef = Firestore.instance.collection("users");
+final userRef = Firestore.instance.collection('users');
 final postsRef = Firestore.instance.collection('posts');
 final DateTime timestamp = DateTime.now();
 User currentUser;
@@ -30,7 +24,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  //varialbe
   bool isAuth = false;
   PageController pageController;
   int pageIndex = 0;
@@ -39,17 +32,17 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     pageController = PageController();
-    //detects when user signed in
-    googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
+    // Detects when user signed in
+    googleSignIn.onCurrentUserChanged.listen((account) {
       handleSignIn(account);
     }, onError: (err) {
-      print('Error siging in : $err');
+      print('Error signing in: $err');
     });
-    //Reauthenticate user when app is open
+    // Reauthenticate user when app is opened
     googleSignIn.signInSilently(suppressErrors: false).then((account) {
       handleSignIn(account);
     }).catchError((err) {
-      print('Error siging in : $err');
+      print('Error signing in: $err');
     });
   }
 
@@ -66,33 +59,31 @@ class _HomeState extends State<Home> {
     }
   }
 
-//tao user
   createUserInFirestore() async {
-    // 1) check if user exist in users collection in db(according to their id)
+    // 1) check if user exists in users collection in database (according to their id)
     final GoogleSignInAccount user = googleSignIn.currentUser;
-    DocumentSnapshot doc = await userRef.document(user.id).get();
+    DocumentSnapshot doc = await usersRef.document(user.id).get();
 
     if (!doc.exists) {
       // 2) if the user doesn't exist, then we want to take them to the create account page
       final username = await Navigator.push(
           context, MaterialPageRoute(builder: (context) => CreateAccount()));
 
-      // 3) get usernamefrom create account, use it to make new user document in user collection
-      userRef.document(user.id).setData({
+      // 3) get username from create account, use it to make new user document in users collection
+      usersRef.document(user.id).setData({
         "id": user.id,
         "username": username,
         "photoUrl": user.photoUrl,
         "email": user.email,
         "displayName": user.displayName,
         "bio": "",
-        "timestamp": timestamp,
+        "timestamp": timestamp
       });
 
-      doc = await userRef.document(user.id).get();
+      doc = await usersRef.document(user.id).get();
     }
+
     currentUser = User.fromDocument(doc);
-    print(currentUser);
-    print(currentUser.username);
   }
 
   @override
@@ -118,21 +109,16 @@ class _HomeState extends State<Home> {
   onTap(int pageIndex) {
     pageController.animateToPage(
       pageIndex,
-      duration: Duration(milliseconds: 400),
+      duration: Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return isAuth ? buildAuthScreen() : buildUnAuthScreen();
   }
 
   Scaffold buildAuthScreen() {
     return Scaffold(
       body: PageView(
         children: <Widget>[
-          //Timeline(),
+          // Timeline(),
           ElevatedButton(
             child: Text('Logout'),
             onPressed: logout,
@@ -140,7 +126,7 @@ class _HomeState extends State<Home> {
           ActivityFeed(),
           Upload(currentUser: currentUser),
           Search(),
-          Profile(),
+          Profile(profileId: currentUser?.id),
         ],
         controller: pageController,
         onPageChanged: onPageChanged,
@@ -151,24 +137,16 @@ class _HomeState extends State<Home> {
           onTap: onTap,
           activeColor: Theme.of(context).primaryColor,
           items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.whatshot),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.notifications_active),
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.whatshot)),
+            BottomNavigationBarItem(icon: Icon(Icons.notifications_active)),
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.photo_camera,
                 size: 35.0,
               ),
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle),
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.search)),
+            BottomNavigationBarItem(icon: Icon(Icons.account_circle)),
           ]),
     );
     // return RaisedButton(
@@ -198,16 +176,21 @@ class _HomeState extends State<Home> {
             Text(
               'FishBook',
               style: TextStyle(
-                  fontFamily: "Signatra", fontSize: 90.0, color: Colors.black),
+                fontFamily: "Signatra",
+                fontSize: 90.0,
+                color: Colors.white,
+              ),
             ),
             GestureDetector(
-              onTap: login, //() => print('tapped'),
+              onTap: login,
               child: Container(
                 width: 260.0,
                 height: 60.0,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/images/google_signin_button.png'),
+                    image: AssetImage(
+                      'assets/images/google_signin_button.png',
+                    ),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -217,5 +200,10 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return isAuth ? buildAuthScreen() : buildUnAuthScreen();
   }
 }
