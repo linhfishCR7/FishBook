@@ -29,24 +29,25 @@ class _UploadState extends State<Upload>
   File file;
   bool isUploading = false;
   String postId = Uuid().v4();
+  final picker = ImagePicker();
 
-  handleTakePhoto() async {
+  Future handleTakePhoto() async {
     Navigator.pop(context);
-    File file = await ImagePicker.pickImage(
+    final file = await picker.getImage(
       source: ImageSource.camera,
       maxHeight: 675,
       maxWidth: 960,
     );
     setState(() {
-      this.file = file;
+      this.file = File(file.path);
     });
   }
 
   handleChooseFromGallery() async {
     Navigator.pop(context);
-    File file = await ImagePicker.pickImage(source: ImageSource.gallery);
+    final file = await picker.getImage(source: ImageSource.gallery);
     setState(() {
-      this.file = file;
+      this.file = File(file.path);
     });
   }
 
@@ -175,7 +176,7 @@ class _UploadState extends State<Upload>
           style: TextStyle(color: Colors.black),
         ),
         actions: [
-          FlatButton(
+          TextButton(
             onPressed: isUploading ? null : () => handleSubmit(),
             child: Text(
               "Post",
