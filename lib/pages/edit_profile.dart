@@ -102,7 +102,9 @@ class _EditProfileState extends State<EditProfile> {
         "bio": bioController.text,
       });
       SnackBar snackbar = SnackBar(content: Text("Profile updated!"));
-      _scaffoldKey.currentState.showSnackBar(snackbar);
+      //_scaffoldKey.currentState.showSnackBar(snackbar);
+      ScaffoldMessenger.of(context).showSnackBar(snackbar);
+
     }
   }
 

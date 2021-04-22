@@ -29,24 +29,25 @@ class _UploadState extends State<Upload>
   File file;
   bool isUploading = false;
   String postId = Uuid().v4();
+  final picker = ImagePicker();
 
   handleTakePhoto() async {
     Navigator.pop(context);
-    File file = await ImagePicker.pickImage(
+    final pickedFile = await picker.getImage(
       source: ImageSource.camera,
       maxHeight: 675,
       maxWidth: 960,
     );
     setState(() {
-      this.file = file;
+      this.file = File(pickedFile.path);
     });
   }
 
   handleChooseFromGallery() async {
     Navigator.pop(context);
-    File file = await ImagePicker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
     setState(() {
-      this.file = file;
+      this.file = File(pickedFile.path);
     });
   }
 
@@ -81,19 +82,19 @@ class _UploadState extends State<Upload>
           SvgPicture.asset('assets/images/upload.svg', height: 260.0),
           Padding(
             padding: EdgeInsets.only(top: 20.0),
-            child: RaisedButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+            child: ElevatedButton(
+              child: Text(
+                "Upload Image",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22.0,
                 ),
-                child: Text(
-                  "Upload Image",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22.0,
-                  ),
-                ),
-                color: Colors.deepOrange,
-                onPressed: () => selectImage(context)),
+              ),
+              onPressed: () => selectImage(context),
+              style: ElevatedButton.styleFrom(
+                  primary: Colors.purple,
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20)),
+            ),
           ),
         ],
       ),
@@ -175,7 +176,7 @@ class _UploadState extends State<Upload>
           style: TextStyle(color: Colors.black),
         ),
         actions: [
-          FlatButton(
+          TextButton(
             onPressed: isUploading ? null : () => handleSubmit(),
             child: Text(
               "Post",
@@ -249,15 +250,12 @@ class _UploadState extends State<Upload>
             width: 200.0,
             height: 100.0,
             alignment: Alignment.center,
-            child: RaisedButton.icon(
+            child: ElevatedButton.icon(
               label: Text(
                 "Use Current Location",
                 style: TextStyle(color: Colors.white),
               ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-              color: Colors.blue,
+              
               onPressed: getUserLocation,
               icon: Icon(
                 Icons.my_location,
