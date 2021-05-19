@@ -1,3 +1,8 @@
+/*
+ User: Ha Van Linh
+ Date: 29/03/2021
+ Time: 06:27 PM
+ */
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -47,14 +52,14 @@ class _HomeState extends State<Home> {
     }, onError: (err) {
       print('Error signing in: $err');
     });
-    // Reauthenticate user when app is opened
+    // Xác thực lại khi ứng dụng được mở
     googleSignIn.signInSilently(suppressErrors: false).then((account) {
       handleSignIn(account);
     }).catchError((err) {
       print('Error signing in: $err');
     });
   }
-
+  //Đăng ký và đăng nhập bằng tài khoản gg
   handleSignIn(GoogleSignInAccount account) async {
     if (account != null) {
       await createUserInFirestore();
@@ -88,7 +93,7 @@ class _HomeState extends State<Home> {
         final String recipientId = message['data']['recipient'];
         final String body = message['notification']['body'];
         if (recipientId == user.id) {
-         // print("Notification shown!");
+          // print("Notification shown!");
           SnackBar snackbar = SnackBar(
               content: Text(
             body,
@@ -101,6 +106,7 @@ class _HomeState extends State<Home> {
     );
   }
 
+  //lấy quyền cho IOS
   getiOSPermission() {
     _firebaseMessaging.requestNotificationPermissions(
         IosNotificationSettings(alert: true, badge: true, sound: true));
@@ -109,6 +115,8 @@ class _HomeState extends State<Home> {
     });
   }
 
+
+  //Tạo người dùng trên firebase
   createUserInFirestore() async {
     // 1) check if user exists in users collection in database (according to their id)
     final GoogleSignInAccount user = googleSignIn.currentUser;
@@ -227,7 +235,7 @@ class _HomeState extends State<Home> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(
-              'FlutterShare',
+              'FishBook',
               style: TextStyle(
                 fontFamily: "Signatra",
                 fontSize: 90.0,

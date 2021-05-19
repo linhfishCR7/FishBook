@@ -1,3 +1,8 @@
+/*
+ User: Ha Van Linh
+ Date: 12/05/2021
+ Time: 06:27 PM
+ */
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttershare/models/user.dart';

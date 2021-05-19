@@ -1,3 +1,8 @@
+/*
+ User: Ha Van Linh
+ Date: 12/04/2021
+ Time: 06:27 PM
+ */
 import 'dart:async';
 
 import 'package:animator/animator.dart';

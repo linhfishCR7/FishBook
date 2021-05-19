@@ -8,6 +8,7 @@ admin.initializeApp();
 // exports.helloWorld = functions.https.onRequest((request, response) => {
 //  response.send("Hello from Firebase!");
 // });
+
 exports.onCreateFollower = functions.firestore
   .document("/followers/{userId}/userFollowers/{followerId}")
   .onCreate(async (snapshot, context) => {
@@ -15,21 +16,21 @@ exports.onCreateFollower = functions.firestore
     const userId = context.params.userId;
     const followerId = context.params.followerId;
 
-    // 1) Create followed users posts ref
+    // 1) Tạo người dùng đã theo dõi bài viết ref
     const followedUserPostsRef = admin
       .firestore()
       .collection("posts")
       .doc(userId)
       .collection("userPosts");
 
-    // 2) Create following user's timeline ref
+    // 2) Tạo dòng thời dan người dùng đang theo dõi ref
     const timelinePostsRef = admin
       .firestore()
       .collection("timeline")
       .doc(followerId)
       .collection("timelinePosts");
 
-    // 3) Get followed users posts
+    // 3) Lấy bài đăng của người dùng đã theo dõi
     const querySnapshot = await followedUserPostsRef.get();
 
     // 4) Add each user post to following user's timeline
